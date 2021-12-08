@@ -1,0 +1,116 @@
+</form>
+<footer class="group js-footer" id="footer" role="contentinfo">
+  <div class="footer-wrapper">
+    <div class="footer-meta">
+      <div class="footer-meta-inner">
+        <div class="open-government-licence">
+          <p class="logo"><a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Open Government Licence</a></p>
+          <p>All content is available under the <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Open Government Licence v3.0</a>, except where otherwise stated</p>
+        </div>
+      </div>
+      <div class="copyright">
+        <a href="https://www.nationalarchives.gov.uk/information-management/our-services/crown-copyright.htm">© Crown copyright</a>
+      </div>
+    </div>
+  </div>
+</footer>
+<!--end footer-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script>
+  $('label').each(function () {
+    $(this).clone().insertBefore($(this).closest('tr').find('input[type="text"]')).addClass('topLabel');
+  });
+
+  //revove * Indicates a required field
+  $('td').find('em:contains("Indicates a required field")').closest('td').css( "display", "none" );
+
+  //Removes zip code text from label
+  $('td').find('span:contains("Postcode/ZIP code")').text('Postcode');
+
+  //remove asterix
+  var findAsterix = $('span,label');
+
+  for (var i = 0; i < findAsterix.length; ++i) {
+    findAsterix[i].innerHTML = findAsterix[i].innerHTML.replace(/\*?/g,'');
+  }
+
+  var findSpace = document.getElementsByTagName('span');
+
+  for (var j = 0; j < findSpace.length; ++j) {
+    findSpace[j].innerHTML = findSpace[j].innerHTML.replace(/\&nbsp;/g,'');
+  }
+
+  //remove fax field and label
+  $('#fax').closest('tr').remove();
+
+  //remove region field and label
+  $('#region').closest('tr').remove();
+
+  //remove phone field and label
+  $('#tel').closest('tr').remove();
+
+  $('td').find('span:contains("Payment reference")').closest('tr').hide();
+
+  //clone Country, Expiry date
+  $('td.width190').find('span:contains("Country")').clone().insertBefore($('span:contains("Country")').closest('tr').find('select[name="country"]')).addClass('topLabel countryLabel');
+  $('td.width190').find('span:contains("Expiry date")').clone().insertBefore($('span:contains("Expiry date")').closest('tr').find('select[name="cardExp.month"]')).addClass('topLabel expiryLabel');
+
+  //add for mobile
+  $('head').append('<meta name="viewport" content="width=device-width, initial-scale=1">');
+
+  //add optional
+  $('label[for="address2"] span').text('Address 2 (optional)');
+  $('label[for="address3"] span').text('Address 3 (optional)');
+
+  //liability text on a second line
+
+  var myString = $( "b:contains('Payment to HMRC')" ).text();
+  var arr = myString.split('- ');
+
+  $( "b:contains('Payment to HMRC')" ).html(arr[0] + "</br>" + arr[1]);
+
+  // security code row at the end
+  var rowCode = $('label[for=cardCVV]').parent().parent();
+	var rowCardholder = $('label[for=name]').parent().parent();
+	rowCardholder.after(rowCode);
+
+	// taborder to address new security code position in the form
+	$("#cardCVV").attr("tabindex", 131);
+
+	// restyle Security code with a separate what is this link
+	$('label[for=cardCVV]').html('<span>Security Code</span><a href="https://secure.worldpay.com/global3/payment/default/help_securitycode_en.html" class="twoinstr" target="_blank" title="Security code help - Opens in new window." style="margin-left:5px;color:#005ea5 !important">What is this?</a>');
+	$('label[for=name] span').text("Name (as shown on card)");
+
+  // Hide help buttons
+  $('td').find('img[src="/images/buttons/help.gif"]').closest('td').hide();
+
+  // Style payment details
+  var detailsArr = ["Payment method", "Description", "Amount"];
+  var lengthArr = $(detailsArr).size();
+  i = 0;
+
+  while (i < lengthArr) {
+    $('td').find('span:contains('+detailsArr[i]+')').closest('tr').addClass('paydetails');
+    i++;
+  }
+
+  // Remove unwanted cards
+  var cardsArr = ["Diners", "Amex", "AirPlus", "UATP"];
+  var lengthArr = $(cardsArr).size();
+  i = 0;
+
+  while (i < lengthArr) {
+    $('td').find('span:contains('+cardsArr[i]+')').closest('td').hide();
+    i++;
+  }
+
+  $('#noncardGroupHeadingselected').next('tr').hide();
+
+  // Change cancel link
+  cancelLink = '<a href="payment-cancelled" tabindex="250" class="cancelLink addition">Cancel payment</a>';
+  $('td label').find('b:contains(Cancel)').closest('span').html(cancelLink);
+
+  $('td').find('span:contains(Description)').closest('td').next('td').find('span b').html('Payment to DWP');
+  $('td').find('img[scr="/public/magic.gif"]').closest('td').hide();
+</script>
+</body></html>
